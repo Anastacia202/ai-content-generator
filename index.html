@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capaciti AI Content Generator & Prompt Library</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom smooth transitions and scrollbar */
+        * { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-full flex flex-col font-sans antialiased">
+
+    <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2.5 rounded-xl shadow-inner text-indigo-100 flex items-center justify-center">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Capaciti AI Content Suite</h1>
+                    <p class="text-xs text-indigo-200">Week 2: Content Generation & AI Productivity Project</p>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex bg-indigo-950/60 p-1.5 rounded-xl border border-indigo-800/60 shadow-inner">
+                <button onclick="switchTab('generator')" id="nav-generator" class="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-indigo-600 text-white shadow flex items-center gap-2">
+                    <i class="fa-solid fa-pen-nib"></i> Generator
+                </button>
+                <button onclick="switchTab('library')" id="nav-library" class="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-indigo-200 hover:text-white hover:bg-indigo-900/50 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark"></i> Prompt Library
+                </button>
+                <button onclick="switchTab('sandbox')" id="nav-sandbox" class="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-indigo-200 hover:text-white hover:bg-indigo-900/50 flex items-center gap-2">
+                    <i class="fa-solid fa-flask"></i> Sandbox
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-y-auto">
+
+        <!-- ================= SECTION 1: CONTENT GENERATOR ================= -->
+        <section id="tab-generator" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-indigo-600"></i> AI Content Generation Studio
+                    </h2>
+                    <p class="text-sm text-slate-500">Choose your content type, adjust tone parameters, and generate high-quality drafts instantly.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Generator Form Inputs -->
+                    <div class="lg:col-span-5 space-y-5">
+                        <!-- Content Type -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Content Type</label>
+                            <div class="grid grid-cols-2 gap-3" id="contentTypeGroup">
+                                <button type="button" onclick="selectContentType('blog')" class="contentTypeBtn p-3 rounded-xl border border-indigo-600 bg-indigo-50 text-indigo-700 font-medium text-sm flex items-center gap-2.5 transition-all shadow-xs">
+                                    <i class="fa-solid fa-blog text-indigo-600"></i> Blog Post
+                                </button>
+                                <button type="button" onclick="selectContentType('email')" class="contentTypeBtn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-300 font-medium text-sm flex items-center gap-2.5 transition-all">
+                                    <i class="fa-solid fa-envelope text-indigo-600"></i> Pro Email
+                                </button>
+                                <button type="button" onclick="selectContentType('social')" class="contentTypeBtn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-300 font-medium text-sm flex items-center gap-2.5 transition-all">
+                                    <i class="fa-solid fa-hashtag text-indigo-600"></i> Social Media
+                                </button>
+                                <button type="button" onclick="selectContentType('code')" class="contentTypeBtn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-300 font-medium text-sm flex items-center gap-2.5 transition-all">
+                                    <i class="fa-solid fa-code text-indigo-600"></i> Code Snippet
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Topic / Keyword Input -->
+                        <div>
+                            <label for="genTopic" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Topic or Main Keyword</label>
+                            <input type="text" id="genTopic" placeholder="e.g., The Future of AI in Software Engineering" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-slate-50/50">
+                        </div>
+
+                        <!-- Tone Selection -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="genTone" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Tone</label>
+                                <select id="genTone" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-slate-50/50">
+                                    <option value="Professional">Professional</option>
+                                    <option value="Casual & Friendly">Casual & Friendly</option>
+                                    <option value="Persuasive">Persuasive</option>
+                                    <option value="Informative">Informative</option>
+                                    <option value="Enthusiastic">Enthusiastic</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="genLength" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Length</label>
+                                <select id="genLength" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-slate-50/50">
+                                    <option value="Concise">Concise / Short</option>
+                                    <option value="Standard" selected>Standard</option>
+                                    <option value="Comprehensive">Comprehensive / Detailed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Additional Context / Instructions -->
+                        <div>
+                            <label for="genContext" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Additional Context (Optional)</label>
+                            <textarea id="genContext" rows="3" placeholder="Add specific audience, constraints, or key points to cover..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-slate-50/50 resize-none"></textarea>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button onclick="generateContent()" id="generateBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-medium py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wand-magic"></i> Generate Content
+                        </button>
+                    </div>
+
+                    <!-- Generator Output Display -->
+                    <div class="lg:col-span-7 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden">
+                        <!-- Output Header -->
+                        <div class="bg-slate-800/80 px-5 py-3.5 border-b border-slate-700/60 flex justify-between items-center">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                                <span class="text-xs font-mono text-slate-400 ml-2" id="outputStatusLabel">Ready for prompt</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="copyOutput()" title="Copy to Clipboard" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                                <button onclick="exportOutput()" title="Export as TXT" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5">
+                                    <i class="fa-solid fa-download"></i> Export
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output Body -->
+                        <div class="p-6 flex-grow font-mono text-sm text-slate-200 overflow-y-auto max-h-[500px] whitespace-pre-wrap" id="outputContent">
+<span class="text-slate-500 italic">// Your generated content will appear here...
+// Select a content type, enter a topic, and click "Generate Content".</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: PROMPT LIBRARY ================= -->
+        <section id="tab-library" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-6 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark text-indigo-600"></i> Optimized Prompt Library
+                        </h2>
+                        <p class="text-sm text-slate-500">Explore, search, and copy production-ready prompts tested for maximum AI productivity.</p>
+                    </div>
+                    <!-- Search & Filters -->
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <div class="relative flex-grow md:w-64">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                            </span>
+                            <input type="text" id="promptSearchInput" oninput="filterPrompts()" placeholder="Search prompts, tags..." class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50">
+                        </div>
+                        <select id="promptCategoryFilter" onchange="filterPrompts()" class="px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50">
+                            <option value="all">All Categories</option>
+                            <option value="Blog">Blog & Content</option>
+                            <option value="Email">Professional Email</option>
+                            <option value="Coding">Coding & Tech</option>
+                            <option value="Productivity">Productivity</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Prompt Grid Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="promptGrid">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: PROMPT OPTIMIZATION SANDBOX ================= -->
+        <section id="tab-sandbox" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-flask text-indigo-600"></i> Prompt Optimization & Refinement Sandbox
+                    </h2>
+                    <p class="text-sm text-slate-500">Test a raw draft prompt and see how AI prompt engineering principles transform it into an optimal query.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Input Raw Prompt -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="rawPromptInput" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Raw / Vague Prompt</label>
+                            <textarea id="rawPromptInput" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-slate-50/50" placeholder="e.g., Write an email to my boss about a project.">Write a blog post about AI.</textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="sandboxGoal" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Desired Outcome</label>
+                                <select id="sandboxGoal" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-slate-50/50">
+                                    <option value="depth">Add Depth & Structure</option>
+                                    <option value="tone">Refine Tone & Audience</option>
+                                    <option value="format">Format Output (Markdown/JSON)</option>
+                                    <option value="constraints">Add Strict Constraints</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sandboxPersona" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Assign Persona</label>
+                                <select id="sandboxPersona" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-slate-50/50">
+                                    <option value="expert">Senior Industry Expert</option>
+                                    <option value="copywriter">Professional Copywriter</option>
+                                    <option value="developer">Lead Software Architect</option>
+                                    <option value="educator">Clear Tech Educator</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="optimizePrompt()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Optimize Prompt
+                        </button>
+                    </div>
+
+                    <!-- Iterative Breakdown & Optimized Result -->
+                    <div class="space-y-5 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-indigo-600"></i> Iteration & Optimization Breakdown
+                        </h3>
+                        <div id="sandboxSteps" class="space-y-3">
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-sm text-slate-600">
+                                <span class="font-semibold text-slate-800 block mb-1">Step 1: Identify Ambiguity</span>
+                                Vague prompts lack clear context, audience definition, and format guidelines.
+                            </div>
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-sm text-slate-600">
+                                <span class="font-semibold text-slate-800 block mb-1">Step 2: Apply Prompt Framework</span>
+                                Incorporating Role, Task, Constraints, and Output Format.
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Optimized Prompt Result</span>
+                            <div class="bg-slate-900 text-emerald-400 font-mono p-4 rounded-xl text-xs relative" id="optimizedPromptOutput">
+                                // Click "Optimize Prompt" to generate structured prompt engineering result...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>&copy; 2026 Capaciti AI Productivity Project | Week 2 Deliverable</p>
+            <p class="text-indigo-600 font-medium">Prompt Engineering & Automated Content Workflows</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50 text-sm font-medium">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">Action successful!</span>
+    </div>
+
+    <script>
+        // State variables
+        let currentContentType = 'blog';
+
+        // Prompt Library Data
+        const promptLibraryData = [
+            {
+                id: 1,
+                title: "Viral LinkedIn Thought Leadership Post",
+                category: "Blog",
+                tags: ["Social", "LinkedIn", "Content"],
+                description: "Generates professional yet engaging thought leadership posts with engaging hooks and hashtags.",
+                prompt: "Act as a senior tech professional. Write a LinkedIn post about [Topic]. Include a strong hook in the first line, 3 actionable bullet points, and a concluding question to drive comments. Keep tone [Tone]."
+            },
+            {
+                id: 2,
+                title: "Executive Stakeholder Email Update",
+                category: "Email",
+                tags: ["Email", "Business", "Communication"],
+                description: "Drafts concise, high-impact status updates for managers and executive stakeholders.",
+                prompt: "Act as an efficient project manager. Write a status update email regarding [Topic]. Use the BLUF (Bottom Line Up Front) method, outline key milestones achieved, current blockers, and next steps in a professional tone."
+            },
+            {
+                id: 3,
+                title: "Clean JavaScript Function with Unit Tests",
+                category: "Coding",
+                tags: ["Code", "JavaScript", "Engineering"],
+                description: "Produces robust, well-documented code snippets along with error handling and sample tests.",
+                prompt: "Act as a Senior Software Architect. Write a clean, optimized JavaScript function that solves [Topic]. Include JSDoc comments, input validation, try-catch error handling, and 2 sample test cases."
+            },
+            {
+                id: 4,
+                title: "SEO-Optimized Blog Post Outline",
+                category: "Blog",
+                tags: ["SEO", "Blogging", "Strategy"],
+                description: "Creates comprehensive blog outlines with H2/H3 headers, keyword placements, and meta descriptions.",
+                prompt: "Act as an expert SEO content strategist. Create a detailed blog post outline for the keyword '[Topic]'. Include SEO title suggestions, meta description, target audience persona, and 5 structured H2/H3 subsections."
+            },
+            {
+                id: 5,
+                title: "Client De-escalation & Support Response",
+                category: "Email",
+                tags: ["Support", "Customer Service", "Email"],
+                description: "Crafts empathetic, polite, and constructive responses to frustrated clients.",
+                prompt: "Act as a senior customer success lead. Draft a professional, empathetic email responding to a client complaint about [Topic]. Acknowledge the frustration, outline immediate corrective action, and offer a positive resolution."
+            },
+            {
+                id: 6,
+                title: "Python Data Processing Script",
+                category: "Coding",
+                tags: ["Python", "Data", "Automation"],
+                description: "Writes efficient Python code utilizing modern best practices and libraries like Pandas or standard modules.",
+                prompt: "Act as a Python expert. Write a clean script to process and analyze [Topic]. Include type hints, docstrings, modular functions, and robust exception handling."
+            }
+        ];
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPromptLibrary(promptLibraryData);
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            ['generator', 'library', 'sandbox'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t}`);
+                btn.className = "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-indigo-200 hover:text-white hover:bg-indigo-900/50 flex items-center gap-2";
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.className = "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-indigo-600 text-white shadow flex items-center gap-2";
+        }
+
+        // Content Type Selection
+        function selectContentType(type) {
+            currentContentType = type;
+            const buttons = document.querySelectorAll('.contentTypeBtn');
+            buttons.forEach(btn => {
+                btn.className = "contentTypeBtn p-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-slate-300 font-medium text-sm flex items-center gap-2.5 transition-all";
+            });
+            event.currentTarget.className = "contentTypeBtn p-3 rounded-xl border border-indigo-600 bg-indigo-50 text-indigo-700 font-medium text-sm flex items-center gap-2.5 transition-all shadow-xs";
+        }
+
+        // Content Generator Simulation
+        function generateContent() {
+            const topic = document.getElementById('genTopic').value.trim() || 'AI Content Automation & Productivity';
+            const tone = document.getElementById('genTone').value;
+            const length = document.getElementById('genLength').value;
+            const context = document.getElementById('genContext').value.trim();
+
+            const btn = document.getElementById('generateBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating Content...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                let output = '';
+                if (currentContentType === 'blog') {
+                    output = `# ${topic}\n\n`;
+                    output += `*Published by Capaciti AI Studio | Tone: ${tone} | Scope: ${length}*\n\n`;
+                    output += `## Introduction\nIn today's fast-evolving digital landscape, mastering ${topic.toLowerCase()} is no longer optional—it is a core competency for modern professionals. By integrating smart AI workflows, teams can scale productivity exponentially.\n\n`;
+                    output += `## Key Takeaways & Impact\n1. **Efficiency Boost:** Automating repetitive drafting saves hours of manual work.\n2. **Prompt Iteration:** Refining prompts ensures high-fidelity, tailored outputs.\n3. **Individual Ownership:** Building custom tools empowers developers and creators alike.\n\n`;
+                    if (context) output += `*Context Addressed:* ${context}\n\n`;
+                    output += `## Conclusion\nEmbracing AI tools within structured frameworks enables sustainable innovation and continuous growth.`;
+                } else if (currentContentType === 'email') {
+                    output = `Subject: Strategic Update & Action Items: ${topic}\n\n`;
+                    output += `Dear Team,\n\nI hope this email finds you well.\n\n`;
+                    output += `I am writing to share our latest progress regarding ${topic.toLowerCase()}. Maintaining a ${tone.toLowerCase()} approach has allowed us to hit key milestones ahead of schedule.\n\n`;
+                    if (context) output += `Additional Note: ${context}\n\n`;
+                    output += `Please review the attached reports and let me know your thoughts by Friday.\n\nBest regards,\nCapaciti Developer Team`;
+                } else if (currentContentType === 'social') {
+                    output = `🚀 Transforming the future with ${topic}!\n\n`;
+                    output += `We've been exploring how ${tone.toLowerCase()} AI workflows can revolutionize daily productivity. From automated content generation to prompt optimization, the results speak for themselves.\n\n`;
+                    output += `What is your favorite AI productivity hack? Let us know in the comments below! 👇\n\n`;
+                    output += `#AI #Capaciti #Productivity #Innovation #TechSkills`;
+                } else {
+                    output = `/**\n * Module: ${topic}\n * Tone/Style: ${tone}\n * Description: Automatically generated snippet\n */\n\n`;
+                    output += `async function executeWorkflow(inputData) {\n`;
+                    output += `    try {\n`;
+                    output += `        console.log("Initializing AI productivity task...");\n`;
+                    if (context) output += `        // Constraint: ${context}\n`;
+                    output += `        const sanitizedInput = inputData.trim();\n`;
+                    output += `        return { status: "success", topic: "${topic}", timestamp: new Date().toISOString() };\n`;
+                    output += `    } catch (error) {\n`;
+                    output += `        console.error("Execution failed:", error);\n`;
+                    output += `        throw error;\n`;
+                    output += `    }\n`;
+                    output += `}`;
+                }
+
+                document.getElementById('outputContent').textContent = output;
+                document.getElementById('outputStatusLabel').textContent = `Generated (${currentContentType.toUpperCase()})`;
+                btn.innerHTML = `<i class="fa-solid fa-wand-magic"></i> Generate Content`;
+                btn.disabled = false;
+                showToast("Content generated successfully!");
+            }, 800);
+        }
+
+        // Copy Output to Clipboard
+        function copyOutput() {
+            const text = document.getElementById('outputContent').innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Copied to clipboard!");
+            } catch (err) {
+                showToast("Failed to copy text.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Export Output as TXT File
+        function exportOutput() {
+            const text = document.getElementById('outputContent').innerText;
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Capaciti_${currentContentType}_output.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Exported successfully as .txt!");
+        }
+
+        // Render Prompt Library Cards
+        function renderPromptLibrary(data) {
+            const grid = document.getElementById('promptGrid');
+            grid.innerHTML = '';
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">No prompts found matching your criteria.</div>`;
+                return;
+            }
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all";
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="font-bold text-slate-900 text-sm">${item.title}</h3>
+                            <span class="text-[10px] font-semibold bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full uppercase tracking-wider">${item.category}</span>
+                        </div>
+                        <p class="text-xs text-slate-600">${item.description}</p>
+                        <div class="bg-slate-900 text-slate-200 font-mono text-xs p-3 rounded-xl max-h-24 overflow-y-auto">${item.prompt}</div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                        <div class="flex gap-1 flex-wrap">
+                            ${item.tags.map(tag => `<span class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md">#${tag}</span>`).join('')}
+                        </div>
+                        <button onclick="copyLibraryPrompt(\`${item.prompt.replace(/`/g, '\\`')}\`)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 shadow-xs">
+                            <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter Prompts
+        function filterPrompts() {
+            const query = document.getElementById('promptSearchInput').value.toLowerCase();
+            const category = document.getElementById('promptCategoryFilter').value;
+
+            const filtered = promptLibraryData.filter(item => {
+                const matchesQuery = item.title.toLowerCase().includes(query) || item.description.toLowerCase().includes(query) || item.tags.some(t => t.toLowerCase().includes(query));
+                const matchesCategory = category === 'all' || item.category === category;
+                return matchesQuery && matchesCategory;
+            });
+            renderPromptLibrary(filtered);
+        }
+
+        // Copy Library Prompt
+        function copyLibraryPrompt(promptText) {
+            const textArea = document.createElement("textarea");
+            textArea.value = promptText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Prompt copied to clipboard!");
+            } catch (err) {
+                showToast("Failed to copy prompt.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Optimize Prompt Sandbox
+        function optimizePrompt() {
+            const raw = document.getElementById('rawPromptInput').value.trim() || 'Write content';
+            const goal = document.getElementById('sandboxGoal').value;
+            const persona = document.getElementById('sandboxPersona').value;
+
+            const stepsContainer = document.getElementById('sandboxSteps');
+            stepsContainer.innerHTML = `
+                <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-sm text-slate-600 animate-pulse">
+                    <span class="font-semibold text-slate-800 block mb-1">Step 1: Assigning Persona (${persona})</span>
+                    Setting expert framing to guide model tone and expertise level.
+                </div>
+                <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-sm text-slate-600 animate-pulse">
+                    <span class="font-semibold text-slate-800 block mb-1">Step 2: Structuring for (${goal})</span>
+                    Adding explicit constraints and formatting requirements.
+                </div>
+            `;
+
+            setTimeout(() => {
+                stepsContainer.innerHTML = `
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-sm text-slate-600">
+                        <span class="font-semibold text-slate-800 block mb-1">✓ Step 1: Persona Defined</span>
+                        Assigned authoritative role to ensure accurate terminology.
+                    </div>
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-sm text-slate-600">
+                        <span class="font-semibold text-slate-800 block mb-1">✓ Step 2: Constraints Added</span>
+                        Enhanced with clarity, target audience, and output parameters.
+                    </div>
+                `;
+
+                let optimized = `Act as a ${persona.replace('-', ' ')}. \nTask: ${raw}. \nConstraints: Ensure high clarity, structured markdown headings, professional tone, and actionable takeaways.`;
+                document.getElementById('optimizedPromptOutput').textContent = optimized;
+                showToast("Prompt optimized successfully!");
+            }, 600);
+        }
+
+        // Toast Notification Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
